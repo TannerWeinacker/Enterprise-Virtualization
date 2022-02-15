@@ -1,0 +1,43 @@
+import getpass
+vcenter_server = 'vcenter.tanner.local'
+
+def login():   
+    vcenter_user = input("")
+    passw = getpass.getpass()
+    from pyVim.connect import SmartConnect
+    import ssl
+    s=ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+    si = SmartConnect(hosts=vcenter_server, user=vcenter_user)
+
+def menu():
+    print("[1] VM Hostname and Usernames")
+    print("[2] list VMs")
+    print("[3] VM actions")
+    print("[4] Option 4")
+    print("[0] Exit Program")
+
+
+login()
+menu()
+option = int(input("Please select an option: "))
+
+while option != 0:
+    if option == 1:
+        hostname()
+    elif option == 2:
+        # OPtion two is called
+        print("option 2")
+    elif option == 3:
+        #OPtion 3 is called
+        print("option 3")
+    elif option == 4:
+        #option 4 is called
+        print("option 4")
+    else:
+        print("Invalid option")
+    
+    menu()
+    option = int(input("Please select an option: "))
+    
+
+print("Thanks for running this program")
