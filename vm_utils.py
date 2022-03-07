@@ -42,7 +42,7 @@ def action_menu():
     print("[6] Create a VM")
     print("[0] Menu")
 
-def vmactions(content, getAllVms):
+def vmactions(content):
     action_menu()
     option = int(input("Please select an option: "))
     while option != 0:
@@ -53,7 +53,7 @@ def vmactions(content, getAllVms):
         if option == 3:
             create_snapshot(content)
         if option == 4:
-            change_specs(content,getAllVms)
+            change_specs(content)
         if option == 5:
             createnew(content)
         if option == 6:
@@ -228,7 +228,7 @@ def main():
             print("Username")
             print(file1.readline(18))
         elif option == 4:
-            vmactions(content, getAllVms)
+            vmactions(content)
         else:
             print("Invalid option")
         
