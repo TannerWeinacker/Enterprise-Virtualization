@@ -171,8 +171,9 @@ def poweron(content):
            # createvm
            # if createvm == "Y" or "y":
             #    createvm()
-        else:
-            print("No Vm with that name")
+        elif filter == "":
+            print("VM Not found")
+            poweron(content)
     getAllVms = obj
     for vm in getAllVms:
         vm.PowerOn()
@@ -185,13 +186,13 @@ def poweroff(content):
     for managed_object_ref in container.view:
         if managed_object_ref.name == filter:
             obj.update({managed_object_ref: managed_object_ref.name})
-        else:
-            print("No Vm with that name")
+        elif filter == "":
+            print("VM Not found")
+            poweroff(content)
     getAllVms = obj
     for vm in getAllVms:
         vm.PowerOff()
         print("VM has been powered off!")
-        input("Would you like to create it")
 
 
 def main():
