@@ -172,7 +172,7 @@ def poweron(content):
            # if createvm == "Y" or "y":
             #    createvm()
         else:
-            poweron(content)
+            print("No Vm with that name")
     getAllVms = obj
     for vm in getAllVms:
         vm.PowerOn()
@@ -186,7 +186,7 @@ def poweroff(content):
         if managed_object_ref.name == filter:
             obj.update({managed_object_ref: managed_object_ref.name})
         else:
-            poweroff(content)
+            print("No Vm with that name")
     getAllVms = obj
     for vm in getAllVms:
         vm.PowerOff()
