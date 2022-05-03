@@ -1,0 +1,182 @@
+
+<#
+function vm(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $stat
+}
+#>
+function StartVM(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+    Start-VM $Vm
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+}
+function StopVM(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+    Stop-VM $Vm
+    pause
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $State
+}
+function checkpoint(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+    Stop-VM $Vm
+    $CheckpointName=Read-Host "Checkpoint Name "
+    Checkpoint-VM -Name $Vm -SnapshotName $CheckpointName
+    Start-VM $Vm
+    <# if($_.State -eq "Running"){
+                write-host = "Vm is on!"
+                Write-Host = "Turning VM off!"
+                Stop-VM $Vm
+                $CheckpointName=Read-Host "Checkpoint Name "
+                Checkpoint-VM -Name $Vm -SnapshotName $CheckpointName
+                  }
+        else{
+           $CheckpointName=Read-Host "Checkpoint Name "
+           Checkpoint-VM -Name $Vm -SnapshotName $CheckpointName
+             }
+             #>
+}
+function SetMem(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+    Stop-Vm $Vm
+    $Mem = Read-Host "Ram in GB"
+    $IntMem = [int64]$Mem * 1073741824
+    Set-VMMemory $Vm -StartupBytes $IntMem
+}
+function SetCPU(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+    Stop-Vm $Vm
+    $CPUCount = Read-Host "Enter the number of processors you would like"
+    Set-VMProcessor $Vm -Count $CPUCount
+}
+function ChangeNetwork(){
+    $Vm = Read-Host -Prompt "Enter in a VM name" 
+    $state = Get-VM $Vm | Select-Object state
+    Write-Host $state
+    Stop-Vm $Vm
+    $listswitch = Get-VMSwitch | Select-Object Name
+    Write-Host $listswitch
+    $Switch = Read-Host "Please Select a Switch from the list above"
+    Get-VMNetworkAdapter $Vm | Connect-VMNetworkAdapter -SwitchName $Switch
+}
+<#
+function option(){
+$moreinfo=Read-Host "Would you like more info(y/n)"
+if($moreinfo -eq 'y' -or 'Y'){
+    moreinfo
+}
+elseif($moreinfo -eq 'n' -or 'N'){
+    main
+}
+else{
+    main
+}
+}
+#>
+
+function moreinfo(){
+    $VmInfo = Read-Host Select a VM for more info!
+    $VMs = Get-VM $VmInfo
+         Get-VMHost
+         Get-VMMemory $VmInfo
+         Get-VMProcessor $VmInfo
+         Get-VMCheckpoint $VmInfo
+         Get-VMBios $VmInfo        
+} 
+
+function Vm-info(){
+    $VMs = Get-VM
+    echo "Name:          IP:          State: "
+    ForEach($VM in $VMs){
+        $Adapters=($VM | Get-VMNetworkAdapter)
+        ForEach($Adapter in $Adapters){
+            Write-Host($VM.Name, $Adapter.IpAddresses[0], $VM.State)
+}
+}
+}
+<#
+function vmfilter(){
+foreach ($i in $Vms){
+    $vmList = Get-VM | Select-Object Name
+}
+Write-Host $vmlist
+$vm = Read-Host "Enter vm name"
+write-host $vm
+foreach($vm in $vmList){
+    if($_.Name -eq $vmList){
+        Write-Host "VM Exsist"
+    }
+    else{
+        Write-Host "VM not Exsist"
+        vmfilter
+    }
+    }
+}
+#>
+function main(){
+$moreinfo = New-Object System.Management.Automation.Host.ChoiceDescription '&More-Info', 'More-Info'
+$StartVM = New-Object System.Management.Automation.Host.ChoiceDescription '&StartVM', 'Start-VM'
+$StopVM = New-Object System.Management.Automation.Host.ChoiceDescription '&StopVM', 'Stop-VM'
+$Checkpoint = New-Object System.Management.Automation.Host.ChoiceDescription '&Checkpoint', 'Checkpoint'
+$ChangeMem = New-Object System.Management.Automation.Host.ChoiceDescription '&ChangeMem', 'ChangeMem'
+$ChangeCPU = New-Object System.Management.Automation.Host.ChoiceDescription '&ChangeCPU', 'ChangeCPU'
+$ChangeNet = New-Object System.Management.Automation.Host.ChoiceDescription '&ChangeNet', 'ChangeNet'
+$quit = New-Object System.Management.Automation.Host.ChoiceDescription '&Quit', 'Quit'
+$Options = [System.Management.Automation.Host.ChoiceDescription[]]($StartVM, $StopVM, $Checkpoint, $ChangeMem, $ChangeCPU, $ChangeNet, $moreinfo, $quit)
+$Title = 'Hyper-V Functions list'
+$Message = "Select an option!"
+$Result = $host.ui.PromptForChoice($Title, $Message, $Options, 0)
+switch ($Result){
+         0{
+            'Start-VM'
+            StartVM
+            main
+         }
+         1{
+             'Stop-VM'
+             StopVM
+             main
+         }
+         2{
+             'checkpoint'
+             checkpoint
+             main
+         }
+         3{
+            SetMem
+            main
+         }
+         4{
+            SetCPU
+            main
+         }
+         5{
+            ChangeNetwork
+            main
+         }
+         6{
+             moreinfo
+             main
+        }7{
+             Write-Host 'Quitting'
+         }
+     }
+     pause
+
+}
+
+vm-info
+Start-Sleep -Seconds 2
+main
